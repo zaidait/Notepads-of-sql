@@ -1,0 +1,212 @@
+*Cascading Updates:
+
+create trigger trg_Update_Deaprtment
+	on Department
+	after update
+	as
+	begin
+	if update(DepartmentName)
+	begin
+	update e
+	set e.DepartmentName = d.DepartmentName
+	from Employee e
+	inner join inserted d on e.EmployeeID = D.DepartmentID
+	end
+	end;
+	
+	update Department
+	set DepartmentName = 'Software'
+	where DepartmentID = 4;
+
+*Trigger for data validation:
+
+create trigger PreventPriceDecrease
+  on Products
+  instead of update
+  as
+  begin
+   if exists (
+   select 1
+   from Products p
+   join inserted i on p.ProductID = i.ProductID
+   where i.ProductPrice < p.ProductPrice
+   )
+   begin
+   raiserror('Error: Product price cannot be decreased.', 16, 1)
+   rollback transaction
+   end
+   else
+   begin
+   update Products
+   set ProductPrice = i.ProductPrice
+   from Products p
+   join inserted i on p.ProductID = i.ProductID
+   end
+   end;
+   
+   update Products set ProductPrice = 15000 where ProductID = 1;
+
+*Recursive Trigger:
+
+CREATE TABLE Employees1 (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    ManagerID INT,
+    FOREIGN KEY (ManagerID) REFERENCES Employees1(EmployeeID)
+);
+CREATE TRIGGER tr_UpdateSubordinatesManager
+ON Employees1
+AFTER UPDATE
+AS
+BEGIN
+    -- Check if ManagerID has been changed
+    IF UPDATE(ManagerID)
+    BEGIN
+        -- Update ManagerID for all subordinates
+        UPDATE e
+        SET e.ManagerID = i.ManagerID
+        FROM Employees1 e
+        INNER JOIN INSERTED i ON e.ManagerID = i.EmployeeID
+        INNER JOIN DELETED d ON i.EmployeeID = d.EmployeeID
+        WHERE d.ManagerID != i.ManagerID;
+    END
+END;
+
+INSERT INTO Employees1 (EmployeeID, Name, ManagerID)
+VALUES (1, 'Mujtaba', NULL),   -- CEO, no manager
+       (2, 'Akef', 1),      -- Manager
+       (3, 'Faraz', 2),-- Subordinate
+       (4, 'Maaz', 2);     -- Subordinate
+
+SELECT TOP 1000 [EmployeeID]
+      ,[Name]
+      ,[ManagerID]
+  FROM Employees1;
+
+
+update Employees1 set ManagerID=3 where Name='Akef'
+
+*Instead Of  Trigger
+
+-- Create the Orders table
+CREATE TABLE Orderss (
+    OrderID INT PRIMARY KEY,
+    OrderDate DATE,
+    CustomerID INT
+);
+
+-- Create the OrderDetails table
+CREATE TABLE OrderDetails (
+    OrderDetailID INT PRIMARY KEY,
+    OrderID INT FOREIGN KEY REFERENCES Orderss(OrderID),
+    ProductID INT,
+    Quantity INT,
+    UnitPrice DECIMAL(18, 2)
+);
+
+
+-- Create a view that joins Orders and OrderDetails
+CREATE VIEW vw_OrderDetails
+AS
+SELECT 
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    OD.OrderDetailID,
+    OD.ProductID,
+    OD.Quantity,
+    OD.UnitPrice
+FROM Orderss O
+INNER JOIN OrderDetails OD ON O.OrderID = OD.OrderID;
+
+
+-- Create an INSTEAD OF DELETE trigger on the vw_OrderDetails view
+CREATE TRIGGER trg_DeleteOrderDetails
+ON vw_OrderDetails
+INSTEAD OF DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Delete corresponding records from OrderDetails
+    DELETE FROM OrderDetails
+    WHERE OrderDetailID IN (SELECT D.OrderDetailID FROM Deleted D);
+
+    -- Delete corresponding records from Orders
+    DELETE FROM Orderss
+    WHERE OrderID IN (SELECT DISTINCT D.OrderID FROM Deleted D);
+END;
+GO
+
+
+
+-- Insert sample data into Orders
+INSERT INTO Orderss (OrderID, OrderDate, CustomerID) 
+VALUES (1, '2024-08-30', 100),
+       (2, '2024-08-31', 101);
+
+-- Insert sample data into OrderDetails
+INSERT INTO OrderDetails (OrderDetailID, OrderID, ProductID, Quantity, UnitPrice)
+VALUES (1, 1, 200, 2, 50.00),
+       (2, 1, 201, 1, 75.00),
+       (3, 2, 200, 1, 50.00);
+       
+       
+DELETE FROM vw_OrderDetails WHERE OrderID = 2;
+       
+       -- Check the Orders table to ensure the correct rows were deleted
+SELECT * FROM Orders;
+
+-- Check the OrderDetails table to ensure the correct rows were deleted
+SELECT * FROM OrderDetails;
+
+*Handling Complex Transactions:
+
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    OutstandingBalance DECIMAL(18, 2) 
+);
+
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY,
+    CustomerID INT FOREIGN KEY REFERENCES Customer(CustomerID),
+    PaymentAmount DECIMAL(18, 2) 
+);
+
+IF OBJECT_ID('trg_CheckPaymentAmount', 'TR') IS NOT NULL
+    DROP TRIGGER trg_CheckPaymentAmount;
+GO
+
+CREATE TRIGGER trg_CheckPaymentAmount
+ON Payments
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Inserted I
+        INNER JOIN Customer C ON I.CustomerID = C.CustomerID
+        WHERE I.PaymentAmount > C.OutstandingBalance
+    )
+    BEGIN
+        RAISERROR ('PaymentAmount cannot exceed the OutstandingBalance for the customer.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+GO
+
+
+INSERT INTO Customer (CustomerID, OutstandingBalance) 
+VALUES (1, 500);
+
+INSERT INTO Payments (PaymentID, CustomerID, PaymentAmount) 
+VALUES (1, 1, 200);
+
+INSERT INTO Payments (PaymentID, CustomerID, PaymentAmount) 
+VALUES (3, 1, 200);
+
+SELECT * FROM Payments;
+SELECT * FROM Customer;
+

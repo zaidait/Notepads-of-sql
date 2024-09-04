@@ -1,0 +1,40 @@
+--Select all records from table procedure 
+
+CREATE PROCEDURE GetAllUserss
+AS
+BEGIN
+    -- Select all records from the Employees table
+    SELECT ID, UserID, umail, upassword, city, gender,IsActive, Number, registrationDate
+    FROM Users;
+END;
+
+  EXEC GetAllUserss;
+
+--Insert records in table using procedure 
+  
+  CREATE PROCEDURE InsertUserss
+    @UserID INT,
+    @umail VARCHAR(50),
+    @upassword VARCHAR(50),
+    @city VARCHAR(50),
+    @gender VARCHAR(50),
+    @IsActive VARCHAR(50),
+    @Number int,
+    @registrationDate datetime
+AS
+
+BEGIN
+    INSERT INTO Users (UserID, umail, upassword, city, gender,IsActive, Number, registrationDate)
+    VALUES (@UserID, @umail, @upassword, @city, @gender,@IsActive, @Number, @registrationDate);
+END;
+
+GO;
+EXEC InsertUserss
+    @UserID = 2,
+    @umail = 'zaid@gmail.com',
+    @upassword = 'zaid123',
+    @city = 'aurangabad',
+    @gender = 'male',
+    @IsActive = 'yes',
+    @Number = '100000000',
+    @registrationDate = '2024-02-2';

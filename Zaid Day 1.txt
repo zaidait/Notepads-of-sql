@@ -1,0 +1,74 @@
+Training on jira
+1)Summary
+2)Description
+3)Expected result
+4)Actual result
+5)Severity
+6)Priority
+7)Logs and Attachment
+8)Sprint
+9)Label
+10)Environment
+11)types of bugs
+
+CRUD OPERATIONS:-
+--Select Procedure
+
+CREATE PROCEDURE GetAllEmployees
+AS
+BEGIN
+    -- Select all records from the Employees table
+    SELECT EmployeeID, EmployeeName, JobTitle, Department
+    FROM Employees;
+END;
+
+  EXEC GetAllEmployees;
+
+--Insert Procedure
+
+  CREATE PROCEDURE InsertEmployee
+    @EmployeeID INT,
+    @EmployeeName NVARCHAR(100),
+    @JobTitle NVARCHAR(100),
+    @Department NVARCHAR(100)
+AS
+BEGIN
+    INSERT INTO Employees (EmployeeID, EmployeeName, JobTitle, Department)
+    VALUES (@EmployeeID, @EmployeeName, @JobTitle, @Department);
+END;
+
+EXEC InsertEmployee 3,'Zaid','Software Engineer','Aurangabad';
+
+--Update Procedure
+
+CREATE PROCEDURE UpdateEmployee
+    @EmployeeID INT,
+    @EmployeeName NVARCHAR(100) = NULL,  -- Default to NULL if not provided
+    @JobTitle NVARCHAR(100) = NULL,
+    @Department NVARCHAR(100) = NULL
+AS
+BEGIN
+    UPDATE Employees
+    SET 
+        EmployeeName = ISNULL(@EmployeeName, EmployeeName),
+        JobTitle = ISNULL(@JobTitle, JobTitle),
+        Department = ISNULL(@Department, Department)
+    WHERE EmployeeID = @EmployeeID;
+END;
+
+EXEC UpdateEmployee 
+    @EmployeeID = 1,
+    @EmployeeName = 'Khizar',
+    @JobTitle = 'Senior Developer';
+
+--Delete Procedure
+
+CREATE PROCEDURE DeleteEmployee
+    @EmployeeID INT
+AS
+BEGIN
+    DELETE FROM Employees
+    WHERE EmployeeID = @EmployeeID;
+END;
+
+EXEC DeleteEmployee @EmployeeID = 1;

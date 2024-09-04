@@ -1,0 +1,16 @@
+*Views for Summarizing data*
+
+create view [Employee Department]as
+  select EmployeeID,FirstName,DepartmentName
+  from Employee
+  where DepartmentName = 'Engineering';
+  
+  select * from [Employee Department];
+
+  
+  create view [Employee Above 30000]as
+  select EmployeeID,FirstName,LastName,salary
+  from Employee
+  where Salary > 30000;
+  
+  select * from [Employee Above 30000];

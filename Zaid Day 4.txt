@@ -1,0 +1,97 @@
+*Triggers in Sql
+
+1)Creating a simple trigger:
+
+create trigger triggerUpdateLast
+on Employee
+after update
+  as
+  begin
+	update Employee set LastUpdated = getdate()
+	where EmployeeID in (select distinct EmployeeID from inserted);
+	end;
+	
+update Employee set Salary = 25000 where EmployeeID = 2;
+
+2)Insert trigger:
+
+create trigger trg_Sales_Insert
+on Sales
+after insert
+as
+begin
+	insert into SalesLog (SaleID, SaleAmount, SaleDate)
+	select SaleID, SaleAmount, getdate()
+	from inserted;
+	end;  
+	
+	insert into Sales (SaleAmount, SaleDate)
+	values(5000,'2024-08-29');
+
+3)Delete trigger:
+
+create trigger PreventShippedOrderDeletion
+  on Orders
+  instead of delete
+  as
+  begin
+  if exists (select 1 from deleted where ShippedDate is not null)
+  begin
+  raiserror('Cannot delete shipped orders.',16,1)
+  rollback transaction
+  end
+  else
+  begin
+  delete from Orders where OrderID in (select OrderID from deleted)
+  end
+  end;
+  
+  delete from Orders where OrderID = 1;
+
+4)Audit Trail Trigger:
+
+create trigger trg_CustomerEmailAudit
+  on Customers
+  after update
+  as
+  begin
+  if update(Email)
+  begin
+  insert into Customers (CustomerID,OldEmail, NewEmail)
+  select
+  d.CustomerID,
+  d.Email,
+  i.Email
+  from
+  deleted as d,
+  inserted as i
+  where 
+  d.CustomerID = i.CustomerID;
+  end
+  end;
+
+4)
+create trigger trg_CustomerEmailAudit
+  on Customers
+  after update
+  as
+  begin
+  if update(Email)
+  begin
+  insert into CustomerAudit (CustomerID,OldEmail, NewEmail, ChangedDate, ChangedBy)
+  select
+  d.CustomerID,
+  d.Email,
+  i.Email,
+  getdate(),
+  'User'
+  
+  from
+  deleted as d,
+  inserted as i
+  where 
+  d.CustomerID = i.CustomerID;
+  end
+  end;
+  
+  update Customers set Email = 'zaidkhan@gmail.com' where Email = 'zaid1@gmail.com';

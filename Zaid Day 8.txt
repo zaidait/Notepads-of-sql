@@ -1,0 +1,23 @@
+*Import csv file data to our table: 
+
+bulk insert customer from 'E:\\Customer2.csv'
+  with (firstrow = 2, fieldterminator = ','
+  ,rowterminator = '\n',tablock);
+
+points to understand:
+customer is our table name
+from E:\\Customer2.csv is our file location of csv file
+
+
+*Export table data from sql into json and xml format
+
+*for xml format
+
+ select * from customer
+  for xml auto
+
+*for json format
+
+*json format will only work for sql above 2016 versions
+
+*i have also completed import export data without code

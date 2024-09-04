@@ -1,0 +1,90 @@
+*Jira Binding to github done.
+
+use Employee
+
+create table Employee(
+EmployeeID int primary key identity(1,1),
+FirstName nvarchar(50),
+LastName nvarchar(50),
+Department nvarchar(50),
+Salary decimal(10,2),
+HireDate date);
+
+insert into Employee(FirstName,LastName,Department,Salary,HireDate)
+values ('John','Doe','Engineering',60000,'2022-01-15'),
+('Jane','Smith','Engineering',55000,'2021-05-20'),
+('Robert','Johnson','Engineering',75000,'2020-03-12'),
+('Emily','Davis','Marketing',50000,'2023-07-07');
+
+--Insert values procedure
+
+CREATE PROCEDURE usp_AddEmployee
+    @FirstName nvarchar(50),
+	@LastName nvarchar(50),
+	@Department nvarchar(50),
+	@Salary decimal(10,2),
+	@HireDate date
+AS
+BEGIN
+    INSERT INTO Employee (FirstName,LastName,Department,Salary,HireDate)
+    VALUES (@FirstName,@LastName,@Department,@Salary,@HireDate);
+END;
+
+EXEC usp_AddEmployee 'Khizar','Mirza','Software Engineer',40000,'2022-03-04';
+
+-- Update values procedure
+
+CREATE PROCEDURE usp_UpdateEmployeeSalary
+    @EmployeeID INT,
+    @Salary decimal(10,2)
+AS
+BEGIN
+    UPDATE Employee
+    SET 
+		Salary = ISNULL (@Salary,Salary)
+    WHERE EmployeeID = @EmployeeID;
+END;
+    
+EXEC usp_UpdateEmployeeSalary 1,60000;
+
+--Delete Values Procedure
+
+CREATE PROCEDURE usp_DeleteEmployee
+    @EmployeeID INT
+AS
+BEGIN
+    DELETE FROM Employee
+    WHERE EmployeeID = @EmployeeID;
+END;
+
+EXEC usp_DeleteEmployee 6;
+
+--Get employees department by parameters
+
+CREATE PROCEDURE usp_GetEmployeesDepartment
+	@Department nvarchar(50)
+AS
+BEGIN
+	select * from Employee Where Department = @Department;
+END;
+EXEC usp_GetEmployeesDepartment 'marketing';
+
+--Get High salary by dapartment
+
+CREATE PROCEDURE usp_GetHighSalaryEmployees
+	@Salary decimal(10,2)
+AS
+BEGIN
+	select * from Employee Where Salary >= @Salary;
+END;
+EXEC usp_GetHighSalaryEmployees 55000;
+
+--Get average salary by dapartment
+
+CREATE PROCEDURE usp_AverageSalaryByDepartment
+	@Department nvarchar(50)
+AS
+BEGIN
+	select AVG(Salary) as AverageSalary from Employee where Department = @Department
+END;
+EXEC usp_AverageSalaryByDepartment 'Marketing';

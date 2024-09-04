@@ -1,0 +1,50 @@
+*Complex Subqueries CTE*
+
+ with CustomerAddress(customer_id,first_name,cust_address)
+    as
+    (
+	select customer_id,first_name,cust_address from cte     
+    )
+    select * from CustomerAddress;
+    
+    with CustSalary (customer_id,cust_salary)
+    as
+    (
+    select customer_id,cust_salary from cte
+    )
+    select * from CustSalary;
+
+ WITH my_cs AS (
+      SELECT *, AVG(Price) OVER(partition BY s.Car_ID) AS "Average_Price",
+	  COUNT(address_ID) OVER(partition BY c.customer_ID) AS "Count"
+	  FROM SingleCTE AS s
+	  INNER JOIN SingleCTE2 AS c
+	  ON s.Car_ID = c.customer_ID
+),
+my_ca AS (
+     SELECT * 
+	 FROM SingleCTE2 as c
+     INNER JOIN CTEaddress AS a 
+	 ON a.address_ID2 = c.address_ID
+)
+SELECT cs.first_name, cs.last_name, cs.Car_Name, ca.c_address, cs.Price
+FROM my_ca as ca , my_cs as cs
+
+
+
+*Queries with Window Functions like Row_Number Rank etc.*
+
+     select * ,RANK() over(order by cust_salary desc) as Renk
+    ,DENSE_RANK() over(order by cust_salary asc) as DensRank
+    ,ROW_NUMBER() over(order by customer_id desc) as RowNumber
+    from cte    
+
+
+    select * ,DENSE_RANK() over(order by cust_salary desc) as densrank
+    from cte
+
+    select *,ROW_NUMBER() over(order by cust_salary desc )as renk
+    from cte
+
+    select * ,RANK() over(Order by cust_salary desc) as rnk
+    from cte
