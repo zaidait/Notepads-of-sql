@@ -1,0 +1,125 @@
+*Javascript*
+
+Q)Write simple scripts that involve variable declaration,
+loops, and conditionals.
+
+Answer 1:
+
+var student = {
+            name : "Zaid",
+            age: 19,
+            address: "Maqsood Colony"
+        }
+        document.write(student.name);
+
+//the above code will show the output Zaid.
+
+Answer 2:
+
+var a=new Array();
+        a[0]="Java";
+        document.write("Original Length ="+a.length+"<br>");
+        a.unshift("C ","C++ ","VB ");
+        document.write("New length after unshift method = "+a.length+"<br>");
+        for (var i=0;i<a.length;i++)
+        {
+            document.write(a[i]);
+        }
+
+//the above code will show output after unshift: C C++ VB Java
+
+Answer 3:
+var a={
+           country: "India"
+      }
+        if(a.country=="India"){
+            document.write("You are eligible for upi payment");
+        }
+        else
+            {
+                document.write("You are not eligible for upi payment");
+            }
+
+//the above code will show output of: You are eligible for upi payment
+
+Answer 4:
+
+var car={
+            color: "Red",
+            brand: "Ford",
+            get company(){
+                return this.brand;
+            }
+        };
+        document.write("Company = "+car.company);
+
+//the above code will show output of: Company = Ford
+
+
+Q)Create functions to perform basic arithmetic operations and
+string manipulations
+
+Answer 1:
+
+document.write("Arithmetic Operator:");
+        document.write("<br>");
+
+        var x=5,y=10,z=15;
+        document.write("x + y = "+(x+y));
+        document.write("<br>");
+        document.write("y - x = "+(y-x));
+        document.write("<br>");
+        document.write("x * y = "+(x*y));
+        document.write("<br>");
+        document.write("y / x = "+(y/x));
+        document.write("<br>");
+        document.write("x % 2 = "+(x%2));
+        document.write("<br>");
+        document.write("x + + = "+(x++));
+        document.write("<br>");
+        document.write("x - - = "+(x--));
+        document.write("<br>");
+
+/*the above code will show output of:
+x + y = 15
+y - x = 5
+x * y = 50
+y / x = 2
+x % 2 = 1
+x + + = 5
+x - - = 6 */
+
+Answer 2:
+
+var num1 = 5;
+        var num2 = 5;
+        function add(){
+            var result = num1 + num2;
+            document.write("Addition = "+result+"");
+        }
+        document.write("<br>")
+        add();
+
+//the above code will show output of: Addition 10
+
+
+Answer 3:
+
+var str1 = "My name is";
+        var str2 = "Zaid";
+
+        document.write(str1+" "+str2);
+        document.write("<br>");
+        var str3 = str1+" "+str2;
+        document.write(str3.toUpperCase());
+        document.write("<br>");
+        document.write(str3.toLowerCase());
+        document.write("<br>");
+        document.write(str3.slice(0,7));
+
+/*the above code will show output of:
+My name is Zaid
+MY NAME IS ZAID
+my name is zaid
+My name
+*/

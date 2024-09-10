@@ -1,0 +1,126 @@
+*DOM*
+
+Answer 1:
+
+<div id="my-container"></div>
+    <button id="clickButton">Click me</button>
+
+<script>
+    const button = document.getElementById('clickButton');
+    const container = document.getElementById('my-container');
+    button.addEventListener("click",() => {
+        const el = document.createElement("h1");
+        el.innerText = "Zaid Khan";
+        container.appendChild(el);
+    });
+</script>
+
+
+Answer 2:
+    
+    <div id="myDiv">
+      <p>This is some text inside a div.</p>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+      </ul>
+    </div>
+    
+    <button onclick="selectElement()">Select</button>
+    <button onclick="modifyElement()">Modify</button>
+    <button onclick="deleteElement()">Delete</button>
+    
+    <script>
+      function selectElement() {
+        console.log(document.getElementById('myDiv'), document.getElementById('myDiv').textContent);
+      }
+    
+      function modifyElement() {
+        let firstItem = document.querySelector('#myDiv ul li:first-child');
+        firstItem.textContent = "Modified Item";
+        firstItem.parentNode.appendChild(document.createElement('li')).textContent = "New Item";
+      }
+    
+      function deleteElement() {
+        document.getElementById('myDiv').remove();
+      }
+    </script>
+
+*Event handling
+
+Answer 1:
+
+<button id="clickButton1">Click Me</button>
+    <div id="message"></div>
+    <script>
+    const button = document.getElementById("clickButton1");
+        const messageDiv = document.getElementById("message");
+    
+        button.addEventListener("click", () => {
+            messageDiv.innerText = "Button clicked!";
+        });
+    </script>
+
+Answer 2:
+
+<form id="exampleForm">
+    <input type="text" placeholder="Type something..." required>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.getElementById("exampleForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        alert("Form submitted!");
+    });
+</script>
+
+Answer 3:
+
+<form id="myForm" onsubmit="return validateForm()">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" >
+        <span id="nameError" style="color: red;"></span>
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" >
+        <span id="emailError" style="color: red;"></span>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" >
+        <span id="passwordError" style="color: red;"></span>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    function validateForm() {
+        let isValid = true;
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        document.getElementById('nameError').textContent = '';
+        document.getElementById('emailError').textContent = '';
+        document.getElementById('passwordError').textContent = '';
+
+        if (name === "") {
+            document.getElementById('nameError').textContent = 'Name is required.';
+            isValid = false;
+        }
+        const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+        if (email === "") {
+            document.getElementById('emailError').textContent = 'Email is required.';
+            isValid = false;
+        } 
+        if (password === "") {
+            document.getElementById('passwordError').textContent = 'Password is required.';
+            isValid = false;
+        } 
+        return isValid;
+    }
+</script>

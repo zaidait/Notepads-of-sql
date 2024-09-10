@@ -1,0 +1,112 @@
+*Inner join
+Q)Write an SQL query to display the employee names and 
+their corresponding department names using an INNER JOIN.
+
+Answer:
+select e.Name, d.DepartmentName from Employees as e
+  inner join Departments as d
+  on e.DepartmentID = d.DepartmentID;
+
+*Left join
+Q)Write an SQL query to display all the orders along with their
+ customer names, even if an order has no matching customer
+
+Answer:
+select * from Orders as o
+  left join Customers as c
+  on o.CustomerID = c.CustomerID;
+
+*Right join
+Q)Write an SQL query using a RIGHT JOIN to display all products
+ and their corresponding sales quantities,
+ including products that have not been sold yet.
+
+Answer:
+select * from Sales as s
+  right join Products as p
+  on s.ProductID = p.ProductID;
+
+*Full outer join
+Q)Write an SQL query to list all employees and their corresponding 
+department names,including employees who are not assigned to a 
+department and departments that have no employees.
+
+Answer:
+select * from Employees as e
+  full outer join Departments as d
+  on e.DepartmentID = d.DepartmentID;
+
+*Cross Join
+Q)Write an SQL query using a CROSS JOIN to display all possible 
+combinations of colors and sizes.
+
+Answer:
+select c.ColorName,s.SizeName from Colors c 
+cross join Sizes s;
+
+*Multiple Joins with Aggregation
+Q)Write an SQL query that displays each department’s name, the 
+total number of hours worked on all projects in that department,
+and the average hours per employee for the department.
+
+Answer:
+
+  SELECT 
+  D.DepartmentName,
+  SUM(T.HoursSpent) AS TotalHoursWorkedByDepartment,
+  SUM(T.HoursSpent) / COUNT(DISTINCT T.AssignedEmployeeID)
+  AS AvgHoursPerEmployee
+FROM 
+  Departments D
+   JOIN Projects P ON D.DepartmentID = P.DepartmentID
+   JOIN Tasks T ON P.ProjectID = T.ProjectID
+GROUP BY D.DepartmentName
+
+*Self Join
+Q)Write an SQL query to display the names of all
+ employees and their managers. If an employee does
+ not have a manager, display "No Manager"
+ in the manager column.
+
+Answer:
+select e.name,
+  case when m.name is null then 'No Manager' else m.Name end
+  as ManagerName from Employees e
+  left join Employees m on e.ManagerID = m.EmployeeID;
+
+*Subquery with join and filtering
+Q)Write an SQL query to find the total order amount
+ (sum of quantity * price) for each customer who placed
+ an order in August 2023, but only display customers whose
+ total order amount is greater than $1,000.
+
+Answer:
+  SELECT c.CustomerName, 
+       SUM(oi.Quantity * p.Price) AS TotalAmount
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN OrderItems oi ON o.OrderID = oi.OrderID
+JOIN Products p ON oi.ProductID = p.ProductID
+WHERE o.OrderDate >= '2023-08-01' AND o.OrderDate < '2023-09-01'
+GROUP BY c.CustomerName
+HAVING SUM(oi.Quantity * p.Price) > 1000;
+
+*Join with Date Filtering and Grouping:
+Q)Write an SQL query to display each employee's name,
+ total hours worked in September 2023, and only include
+ employees who have worked more than 10 hours in total.
+ Also, exclude employees who were hired after July 2023.
+
+Answer:
+SELECT 
+  E.Name,
+  SUM(A.HoursWorked) AS TotalHours
+FROM 
+  Employees E
+  LEFT JOIN Attendance A ON E.EmployeeID = A.EmployeeID
+WHERE 
+  A.Date >= '2023-09-01' AND A.Date < '2023-10-01'
+  AND E.HireDate <= '2023-07-01'
+GROUP BY E.Name
+HAVING SUM(A.HoursWorked) > 10;
+

@@ -1,0 +1,22 @@
+*Performance Tuning
+
+set statistics io,time on 
+
+  SET SHOWPLAN_ALL ON
+
+  select * from Products
+  where Category = 'Category 2'
+  order by Price;
+  
+*Security
+
+User Created in sql with different roles and permissions
+
+
+*I have Created one user and one owner with owner permission,
+owner can do insert update delete and also reads the data but,
+user cannot do that it can only read his data
+
+
+*Completed Jira queries languange (JQL)
+  
