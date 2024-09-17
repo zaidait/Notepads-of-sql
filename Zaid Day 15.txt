@@ -1,0 +1,238 @@
+*Local Storage
+Answer 1:
+
+var key = prompt("Enter key you want to set")
+var value = prompt("Enter value you want to set")
+
+localStorage.setItem(key,value)
+
+console.log(`the value at ${key} ${localStorage.getItem(key)}`)
+
+if(key == "1" || key == "2"){
+    localStorage.removeItem(key)
+}
+
+if(key == 0){
+    localStorage.clear()
+}
+
+Answer 2:
+
+<h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button id="addTaskButton">Add Task</button>
+    <ul id="taskList"></ul>
+    <script src="Js-5.js"></script>
+
+<style>
+    #taskList {
+  list-style: none;
+  padding: 0;
+}
+
+#taskList li {
+  margin-bottom: 10px;
+}
+
+#addTaskButton {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+body{font-family: 'Times New Roman', Times, serif;
+font-size: 30px;}
+</style>
+
+//in JS
+const taskInput = document.getElementById("taskInput");
+const addTaskButton = document.getElementById("addTaskButton");
+const taskList = document.getElementById("taskList");
+const tasks = []; 
+const storedTasks = localStorage.getItem("tasks");
+if (storedTasks) {
+  tasks.push(...JSON.parse(storedTasks));
+  renderTasks();
+}
+
+addTaskButton.addEventListener("click", () => {
+  const taskText = taskInput.value;
+  if (taskText.trim() !== "") {
+    tasks.push(taskText);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
+    taskInput.value = "";
+  }
+});
+
+function renderTasks() {
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = task;
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+    });
+    listItem.appendChild(deleteButton);
+    taskList.appendChild(listItem);
+  });
+}
+*Javascript classes
+Answer 1:
+
+class Person{
+constructor(name,age){
+    this.name = name;
+    this.age = age;
+}
+greet(){
+    alert(`Hello my name is ${this.name} and I am ${this.age} years old.`)
+}
+}
+function createPerson(){
+    let person1 = new Person("zaid",20);
+    person1.greet();
+}
+
+//in html <button onclick="createPerson()">Click me</button>
+
+Answer 2:
+
+class Animal{
+    alive = true;
+    eat(){
+        console.log(`this ${this.name} is eating`);
+    }
+    sleep(){
+        console.log(`this ${this.name} is sleeping`);
+    }
+}
+class Rabbit extends Animal{
+    name="rabbit";
+}
+class Fish extends Animal{
+    name = "Fish"
+}
+const rabbit = new Rabbit();
+const fish = new Fish();
+
+rabbit.eat();
+fish.sleep();
+
+*Build application
+
+Answer 1:
+
+<h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button id="addTaskButton">Add Task</button>
+    <ul id="taskList"></ul>
+    <script src="Js-5.js"></script>
+
+<style>
+    #taskList {
+  list-style: none;
+  padding: 0;
+}
+
+#taskList li {
+  margin-bottom: 10px;
+}
+
+#addTaskButton {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+body{font-family: 'Times New Roman', Times, serif;
+font-size: 30px;}
+</style>
+
+//in JS
+const taskInput = document.getElementById("taskInput");
+const addTaskButton = document.getElementById("addTaskButton");
+const taskList = document.getElementById("taskList");
+const tasks = []; 
+const storedTasks = localStorage.getItem("tasks");
+if (storedTasks) {
+  tasks.push(...JSON.parse(storedTasks));
+  renderTasks();
+}
+
+addTaskButton.addEventListener("click", () => {
+  const taskText = taskInput.value;
+  if (taskText.trim() !== "") {
+    tasks.push(taskText);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
+    taskInput.value = "";
+  }
+});
+
+function renderTasks() {
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = task;
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+    });
+    listItem.appendChild(deleteButton);
+    taskList.appendChild(listItem);
+  });
+}
+
+Answer 2 clac:
+
+<input type="number" id="num1" placeholder="Number 1">
+  <input type="number" id="num2" placeholder="Number 2">
+  <br>
+  <button onclick="add()">+</button>
+  <button onclick="subtract()">-</button>
+  <button onclick="multiply()">*</button>
+  <button onclick="divide()">/</button>
+  <br>
+  <p id="result"></p>
+  <script src="Js-5.js"></script>
+
+//in js
+function add() {
+    let num1 = parseFloat(document.getElementById("num1").value);
+    let num2 = parseFloat(document.getElementById("num2").value);
+    document.getElementById("result").textContent = num1 + num2;
+  }
+
+  function subtract() {
+    let num1 = parseFloat(document.getElementById("num1").value);
+    let num2 = parseFloat(document.getElementById("num2").value);
+    document.getElementById("result").textContent = num1 - num2;
+  }
+
+  function multiply() {
+    let num1 = parseFloat(document.getElementById("num1").value);
+    let num2 = parseFloat(document.getElementById("num2").value);
+    document.getElementById("result").textContent = num1 * num2;
+  }
+
+  function divide() {
+    let num1 = parseFloat(document.getElementById("num1").value);
+    let num2 = parseFloat(document.getElementById("num2").value);
+    if (num2 === 0) {
+      document.getElementById("result").textContent = "Cannot divide by zero";
+    } else {
+      document.getElementById("result").textContent = num1 / num2;
+    }
+  }
